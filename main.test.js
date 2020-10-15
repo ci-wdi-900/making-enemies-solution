@@ -1,188 +1,572 @@
 const {
-  makeDino,
-  makeExtinct,
-  makeSingular,
-  truncateSpecies,
+  makeBoss,
+  levelUp,
+  buff,
+  makeSuper,
+  hitEnemy,
+  beastMode,
 } = require('./main.js')
 
 
-
-
-describe('makeDino', () => {
-  it(`given a species name, a period, and a diet, returns a dinosaur object with those values, as well as a default status of 'not extinct'`, () => {
-    const expectedDino = {
-      species: 'Eoraptor',
-      period: 'Triassic',
-      carnivore: true,
-      extinct: false
+describe('makeBoss', () => {
+  it(`given an object, returns a new object with the boss property set to true`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
     }
 
-    expect(makeDino('Eoraptor', 'Triassic', true)).toEqual(expectedDino)
+    const expectedEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: true,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: true,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    expect(makeBoss(enemy1)).toEqual(expectedEnemy1);
+    expect(makeBoss(enemy2)).toEqual(expectedEnemy2);
   });
 
-  it(`allows us to create a dinosaur with status extinct`, () => {
-    const expectedDino = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
+  it('does not mutate the object passed in', () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
     }
 
-    expect(makeDino('Brachiosaurus', 'Jurassic', false, true)).toEqual(expectedDino)
-  })
-})
-
-describe('makeSingular', () => {
-  it(`given a dinosaur object, returns a new dinosaur object with the "us" suffix removed from its species`, () => {
-    const dino = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
-
-    const expectedDino = {
-      species: 'Brachiosaur',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
-
-    expect(makeSingular(dino)).toEqual(expectedDino)
-  })
-
-  it(`returns the dinosaur species intact if it does not end with 'us'`, () => {
-    const dino = {
-      species: 'Eoraptor',
-      period: 'Triassic',
-      carnivore: true,
-      extinct: false
+    const copyOfEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
     }
 
-    expect(makeSingular(dino)).toEqual(dino)
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const copyOfEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    makeBoss(enemy1);
+    makeBoss(enemy2);
+    
+    expect(enemy1).toEqual(copyOfEnemy1);
+    expect(enemy2).toEqual(copyOfEnemy2);
+  })
+});
+
+describe('levelUp', () => {
+  it(`given an object, returns a new object with the level property incremented by 1`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const expectedEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 3,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    expect(levelUp(enemy1)).toEqual(expectedEnemy1);
+    expect(levelUp(enemy2)).toEqual(expectedEnemy2);
+  });
+
+  it('does not mutate the object passed in', () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const copyOfEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const copyOfEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    levelUp(enemy1);
+    levelUp(enemy2);
+    
+    expect(enemy1).toEqual(copyOfEnemy1);
+    expect(enemy2).toEqual(copyOfEnemy2);
+  })
+});
+
+describe('buff', () => {
+  it(`given an object, returns a new object with the attackDamage increased by 15`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const expectedEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 20,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 3,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 25,
+      boss: false,
+      level: 3,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    expect(buff(enemy1)).toEqual(expectedEnemy1);
+    expect(buff(enemy2)).toEqual(expectedEnemy2);
+  });
+
+  it('does not mutate the object passed in', () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const copyOfEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const copyOfEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    buff(enemy1);
+    buff(enemy2);
+    
+    expect(enemy1).toEqual(copyOfEnemy1);
+    expect(enemy2).toEqual(copyOfEnemy2);
+  })
+});
+
+describe('makeSuper', () => {
+  it(`given an object, returns a new object with "Super " prepended (put before) its name`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const expectedEnemy1 = {
+      name: 'Super Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 3,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Super Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 3,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    expect(makeSuper(enemy1)).toEqual(expectedEnemy1);
+    expect(makeSuper(enemy2)).toEqual(expectedEnemy2);
+  });
+
+  it('does not mutate the object passed in', () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const copyOfEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const copyOfEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    makeSuper(enemy1);
+    makeSuper(enemy2);
+    
+    expect(enemy1).toEqual(copyOfEnemy1);
+    expect(enemy2).toEqual(copyOfEnemy2);
+  })
+});
+
+describe('hitEnemy', () => {
+  it(`given an object, returns a new object with the hit points reduced by 10`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const expectedEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 90,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 40,
+    }
+
+    expect(hitEnemy(enemy1)).toEqual(expectedEnemy1);
+    expect(hitEnemy(enemy2)).toEqual(expectedEnemy2);
+  });
+
+  it(`sets alive to false if hit points are at or below 0`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 10,
+    }
+
+    const expectedEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: false,
+      hitPoints: 0,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 5,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: false,
+      hitPoints: -5,
+    }
+
+    expect(hitEnemy(enemy1)).toEqual(expectedEnemy1);
+    expect(hitEnemy(enemy2)).toEqual(expectedEnemy2);
   })
 
-  it(`does not mutate the original dinosaur object`, () => {
-    const dinoTemplate = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
+  it('does not mutate the object passed in', () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
 
-    const dino = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
+    const copyOfEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
 
-    makeSingular(dino);
-    expect(dino).toEqual(dinoTemplate);
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const copyOfEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    hitEnemy(enemy1);
+    hitEnemy(enemy2);
+    
+    expect(enemy1).toEqual(copyOfEnemy1);
+    expect(enemy2).toEqual(copyOfEnemy2);
   })
 })
 
-describe('truncateSpecies', () => {
-  it(`returns a new dinosaur with its species truncated to 7 characters`, () => {
-    const dino = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
+describe('beastMode', () => {
+  it(`given an object, returns a new object that's been buffed (attackDamage increased by 15), made into a boss (boss set to true), had "Super " prepended to its name, and leveled up (level incremented by 1)`, () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
 
-    const truncatedDino = {
-      species: 'Brachio...',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
-    expect(truncateSpecies(dino)).toEqual(truncatedDino);
-  })
+    const expectedEnemy1 = {
+      name: 'Super Goomba',
+      attackDamage: 20,
+      boss: true,
+      level: 2,
+      alive: true,
+      hitPoints: 100,
+    }
 
-  it(`returns the dinosaur unchanged if its species name length is 10 or less`, () => {
-    const dino = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: true
-    };
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const expectedEnemy2 = {
+      name: 'Super Koopa Troopa',
+      attackDamage: 25,
+      boss: true,
+      level: 3,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    expect(beastMode(enemy1)).toEqual(expectedEnemy1);
+    expect(beastMode(enemy2)).toEqual(expectedEnemy2);
+  });
+
+  it('does not mutate the object passed in', () => {
+    const enemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const copyOfEnemy1 = {
+      name: 'Goomba',
+      attackDamage: 5,
+      boss: false,
+      level: 1,
+      alive: true,
+      hitPoints: 100,
+    }
+
+    const enemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    const copyOfEnemy2 = {
+      name: 'Koopa Troopa',
+      attackDamage: 10,
+      boss: false,
+      level: 2,
+      alive: true,
+      hitPoints: 50,
+    }
+
+    beastMode(enemy1);
+    beastMode(enemy2);
     
-    expect(truncateSpecies(dino)).toEqual(dino);
-  })
-
-  it(`does not mutate the original object`, () => {
-    const dinoTemplate = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: true
-    };
-
-    const dino = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: true
-    };
-
-    truncateSpecies(dino)
-    
-    expect(dino).toEqual(dinoTemplate);
-  })
-})
-
-describe('makeExtinct', () => {
-  it(`returns a new dinosaur with its extinct set to true`, () => {
-    const dino1 = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: false
-    };
-
-    const extinctDino1 = {
-      species: 'Brachiosaurus',
-      period: 'Jurassic',
-      carnivore: false,
-      extinct: true
-    };
-
-    const dino2 = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: false
-    };
-
-    const extinctDino2 = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: true
-    };
-
-    expect(makeExtinct(dino1)).toEqual(extinctDino1);
-    expect(makeExtinct(dino2)).toEqual(extinctDino2);
-  })
-
-  it(`does not mutate the original object`, () => {
-    const dinoTemplate = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: true
-    };
-
-    const dino = {
-      species: 'T-Rex',
-      period: 'Cretaceous',
-      carnivore: true,
-      extinct: true
-    };
-
-    makeExtinct(dino)
-    
-    expect(dino).toEqual(dinoTemplate);
+    expect(enemy1).toEqual(copyOfEnemy1);
+    expect(enemy2).toEqual(copyOfEnemy2);
   })
 })
